@@ -58,7 +58,7 @@ function ScriptLoader(config,doneCallback,errorCallback){
 				syncLoad(0,function(){doneCallback();});
 				break;
 			case "fastSync":
-				fastSync(function(){doneCallback();});
+				fastSyncLoad(function(){doneCallback();});
 				break;
 			case "async":
 				asyncLoad(function(){doneCallback();});
@@ -67,7 +67,7 @@ function ScriptLoader(config,doneCallback,errorCallback){
 			//error, invalid mode
 		}
 	}
-	function fastSync(callback){
+	function fastSyncLoad(callback){
 		var 	i,
 				max = scripts.length,
 				req = [],
@@ -77,12 +77,12 @@ function ScriptLoader(config,doneCallback,errorCallback){
 			req[i] = new XMLHttpRequest();
 			req[i].reqId = i;
 			req[i].addEventListener("load",function(){
-				fastSyncLoad(this.reqId,this.responseText,callback);
+				load(this.reqId,this.responseText,callback);
 			});
 			req[i].open("GET",/*"/scriptLoader/"+ */scripts[i]);
 			req[i].send();
 		}
-		function fastSyncLoad(index,text,callback){
+		function load(index,text,callback){
 			var script;
 			if(index - 1 == done){
 				//create script
@@ -96,7 +96,7 @@ function ScriptLoader(config,doneCallback,errorCallback){
 				}
 			} else {
 				setTimeout(function(){
-					fastSyncLoad(index,text,callback);
+					load(index,text,callback);
 				},10);
 			}
 		}		
