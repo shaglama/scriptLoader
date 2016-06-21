@@ -7,7 +7,8 @@ function ScriptLoader(config,doneCallback,errorCallback){
 			mode;
 	
 	//***** Public Members *****************************************************
-	
+	this.loadFile = loadFile;
+	this.loadText = loadText;
 	//***** Initialize *********************************************************
 	//need to make this cross browser, ie document/window.addEventListener,document.attatchEvent,etc	
 	oldOnload = window.onload;	
@@ -147,6 +148,17 @@ function ScriptLoader(config,doneCallback,errorCallback){
 				appendScript(script);				
 			
 		}
+	}
+	function loadFile(src,callback){
+		var script = createScript(src);
+		addCallback(script,callback);
+		appendScript(script);
+	}
+	function loadText(scriptText,callback){
+		var script = createScript();
+		script.text = scriptText;
+		addCallback(script, callback);
+		appendScript(script);
 	}
 	function createScript(src, id){
 		var script = document.createElement('script');
