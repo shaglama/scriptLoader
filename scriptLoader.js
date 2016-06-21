@@ -77,22 +77,12 @@ function ScriptLoader(config,doneCallback,errorCallback){
 			req[i] = new XMLHttpRequest();
 			req[i].reqId = i;
 			req[i].addEventListener("load",function(){
-				fastSyncLoad(this.reqId,this.responseText);
+				fastSyncLoad(this.reqId,this.responseText,callback);
 			});
-			req[i].open("GET","/scriptLoader/"+ scripts[i]);
+			req[i].open("GET",/*"/scriptLoader/"+ */scripts[i]);
 			req[i].send();
 		}
-		checkDone(callback);
-		function checkDone(cb){
-			if(done +1 == max){
-				cb();
-			} else {
-				setTimeout(function(){
-					checkDone(cb);
-				},5);
-			}
-		}
-		function fastSyncLoad(index,text){
+		function fastSyncLoad(index,text,callback){
 			var script;
 			if(index - 1 == done){
 				//create script
@@ -100,10 +90,14 @@ function ScriptLoader(config,doneCallback,errorCallback){
 				script.text = text;
 				appendScript(script);
 				done++;
+				if(done +1 == max){
+					//done
+					callback();
+				}
 			} else {
 				setTimeout(function(){
-					fastSyncLoad(index,text);
-				},5);
+					fastSyncLoad(index,text,callback);
+				},10);
 			}
 		}		
 	}
