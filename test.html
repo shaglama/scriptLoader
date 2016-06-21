@@ -1,0 +1,16 @@
+<html>
+	<head>
+		<script src="scriptLoader.js"></script>
+		<script src="scriptLoaderConfig.js"></script>
+		<script type="text/javascript" >
+			var start = Date.now();
+			var stop;
+			var time;
+			var loader = new ScriptLoader(scriptLoaderConfig,function(){stop = Date.now();time = stop - start;alert("scriptLoaderFinished -- " + time + " milliseconds");},function(message){alert(message);});
+				
+		</script>
+	</head>
+	<body>
+	
+	</body>
+</html>

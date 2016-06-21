@@ -1,0 +1,12 @@
+fastSync 
+	firefox:37 39
+	chrome:50 55
+	midori 37 45
+sync
+	firefox 135 218
+	chorme 178 360
+	midori 55 72
+async 
+	firefox 125 155
+	chrome 155 250
+	midori 50 72
