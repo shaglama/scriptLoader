@@ -9,30 +9,10 @@ function ScriptLoader(config,doneCallback,errorCallback){
 	//***** Public Members *****************************************************
 	this.loadFile = loadFile;
 	this.loadText = loadText;
+	
 	//***** Initialize *********************************************************
 	//attach init to document as soon as DOM is ready
-	if(document.addEventListener){
-		//Modern
-		document.addEventListener("DOMContentLoaded",init);
-	} else {
-		//Old IE
-		if(window.attachEvent){
-			document.attachEvent("onreadystatechange",function(){
-				if ( document.readyState === "interactive" ) {
-					document.detachEvent( "onreadystatechange", arguments.callee );
-					init();
-				}
-			});
-		} else {
-			//use fallback
-			oldOnload = window.onload;	
-			window.onload = function(){
-				oldOnload && oldOnload();
-				init();
-			};
-		}
-	}	
-	
+	attachInit();
 	
 	//***** Private Methods ****************************************************
 	function init(){
@@ -70,20 +50,57 @@ function ScriptLoader(config,doneCallback,errorCallback){
 				//use default
 				mode = "fastSync";
 			}
+		} else {
+			//use defaults
+			scripts = [];
+			parent = document.getElementsByTagName('script')[0].parentNode;
+			;
+			mode = "fastSync";
 		}
-		switch(mode){
-			case "sync":
-				syncLoad(0,function(){doneCallback();});
-				break;
-			case "fastSync":
-				fastSyncLoad(function(){doneCallback();});
-				break;
-			case "async":
-				asyncLoad(function(){doneCallback();});
-				break;
-			default:
-			//error, invalid mode
+		//check to see if there are any scripts to load
+		if(scripts.length > 0){
+			//scripts need to be loaded
+			switch(mode){
+				case "sync":
+					syncLoad(0,function(){doneCallback();});
+					break;
+				case "fastSync":
+					fastSyncLoad(function(){doneCallback();});
+					break;
+				case "async":
+					asyncLoad(function(){doneCallback();});
+					break;
+				default:
+				//error, invalid mode
+			}
+		} else {
+			//no scripts to load
+			doneCallback();
 		}
+		
+	}
+	function attachInit(){
+		if(document.addEventListener){
+			//Modern
+			document.addEventListener("DOMContentLoaded",init);
+		} else {
+			//Old IE
+			if(document.attachEvent){
+				document.attachEvent("onreadystatechange",function(){
+					if (document.readyState === "interactive") {
+						document.detachEvent("onreadystatechange", arguments.callee);
+						init();
+					}
+				});
+			} else {
+				//use fallback
+				oldOnload = window.onload;	
+				window.onload = function(){
+					oldOnload && oldOnload();
+					init();
+				};
+			}
+		}	
 	}
 	function fastSyncLoad(callback){
 		var 	i,
