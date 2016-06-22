@@ -19,8 +19,18 @@ function ScriptLoader(config,doneCallback,errorCallback){
 		scripts = [];
 		done = [];	
 		if(config){
+			//config present
+			//use config to set member values
 			if(config.scripts){
-				scripts = config.scripts;
+				if(isArray(config.scripts)){
+					scripts = config.scripts;
+				} else {
+					//need to throw Error here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				}
+				
+			} else {
+				//use default
+				scripts = [];
 			}
 			if(config.appendTo){
 				switch(config.appendTo){
@@ -38,6 +48,7 @@ function ScriptLoader(config,doneCallback,errorCallback){
 						break;
 					default:
 					//invalid value, use default, attatch to parent of first script
+					//probalby should throw error here instead!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 						parent = document.getElementsByTagName('script')[0].parentNode;	
 				}
 			} else {
@@ -45,13 +56,20 @@ function ScriptLoader(config,doneCallback,errorCallback){
 				parent = document.getElementsByTagName('script')[0].parentNode;	
 			}
 			if(config.mode){
-				mode = config.mode;
+				if(config.mode === "async" || config.mode === "sync" || config.mode === "fastSync"){
+					//valid mode, set member
+					mode = config.mode;
+				} else {
+					//invalid mode
+					//need to throw error here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				}				
 			} else {
 				//use default
 				mode = "fastSync";
 			}
 		} else {
-			//use defaults
+			//config not present
+			//use defaults to set member values
 			scripts = [];
 			parent = document.getElementsByTagName('script')[0].parentNode;
 			;
@@ -214,5 +232,11 @@ function ScriptLoader(config,doneCallback,errorCallback){
 	function appendScript(script){
 		parent.appendChild(script);
 		return true;
+	}
+	function isArray(obj){
+		return Object.prototype.toString.call(obj) === '[object Array]';
+	}
+	function isValidUrl(url){
+		
 	}
 }
