@@ -10,12 +10,29 @@ function ScriptLoader(config,doneCallback,errorCallback){
 	this.loadFile = loadFile;
 	this.loadText = loadText;
 	//***** Initialize *********************************************************
-	//need to make this cross browser, ie document/window.addEventListener,document.attatchEvent,etc	
-	oldOnload = window.onload;	
-	window.onload = function(){
-		oldOnload && oldOnload();
-		init();
-	};
+	//attach init to document as soon as DOM is ready
+	if(document.addEventListener){
+		//Modern
+		document.addEventListener("DOMContentLoaded",init);
+	} else {
+		//Old IE
+		if(window.attachEvent){
+			document.attachEvent("onreadystatechange",function(){
+				if ( document.readyState === "interactive" ) {
+					document.detachEvent( "onreadystatechange", arguments.callee );
+					init();
+				}
+			});
+		} else {
+			//use fallback
+			oldOnload = window.onload;	
+			window.onload = function(){
+				oldOnload && oldOnload();
+				init();
+			};
+		}
+	}	
+	
 	
 	//***** Private Methods ****************************************************
 	function init(){
