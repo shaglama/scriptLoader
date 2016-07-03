@@ -2,7 +2,7 @@
 	Randy Hoggard 2016
 	A constructor to create an object that can dynamically add script to document
 	------------------------ */
-function ScriptLoader(config,doneCallback,errorCallback){
+function ScriptLoader(config,callback){//doneCallback,errorCallback){
 	//***** Private Members ****************************************************
 	var 	scripts,
 			parent,
@@ -61,7 +61,7 @@ function ScriptLoader(config,doneCallback,errorCallback){
 			}
 			if(config.mode){
 				if(config.mode === "async" || config.mode === "sync" || config.mode === "fastSync"){
-					//valid mode, set member
+					//valid mode, set memreq.addEventListener(")ber
 					mode = config.mode;
 				} else {
 					//invalid mode
@@ -84,20 +84,21 @@ function ScriptLoader(config,doneCallback,errorCallback){
 			//scripts need to be loaded
 			switch(mode){
 				case "sync":
-					syncLoad(0,function(){doneCallback();});
+					syncLoad(0,callback);
 					break;
 				case "fastSync":
-					fastSyncLoad(function(){doneCallback();});
+					fastSyncLoad(callback);
 					break;
 				case "async":
-					asyncLoad(function(){doneCallback();});
+					asyncLoad(callback);
 					break;
 				default:
 				//error, invalid mode
+				callback(new Error(mode + " is not a valid mode. Valid modes are sync,fastSync,and async."),"error");
 			}
 		} else {
 			//no scripts to load
-			doneCallback();
+			callback(null,"scriptLoader finished");
 		}
 		
 	}
@@ -149,7 +150,7 @@ function ScriptLoader(config,doneCallback,errorCallback){
 				done++;
 				if(done +1 == max){
 					//done
-					callback();
+					callback(null,"loaded");
 				}
 			} else {
 				setTimeout(function(){
@@ -174,7 +175,7 @@ function ScriptLoader(config,doneCallback,errorCallback){
 		asyncCheckDone(callback);
 		function asyncCheckDone(callback){
 			if(done == max){
-				callback();
+				callback(null,"loaded");
 			} else {
 				setTimeout(function(){
 					asyncCheckDone(callback);
@@ -190,7 +191,7 @@ function ScriptLoader(config,doneCallback,errorCallback){
 		
 		if(start >= max){
 			//all scripts done
-			callback();			
+			callback(null,"loaded");			
 		} else {
 			//script not loaded yet, load it
 			//create script element
@@ -229,7 +230,7 @@ function ScriptLoader(config,doneCallback,errorCallback){
 	}
 	function addCallback(script,callback){
 		script.onload = function(){
-			callback();
+			callback(null,"loaded");
 		};
 		return true;
 	}
