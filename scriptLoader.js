@@ -1,3 +1,7 @@
+/*	----- ScriptLoader -----
+	Randy Hoggard 2016
+	A constructor to create an object that can dynamically add script to document
+	------------------------ */
 function ScriptLoader(config,doneCallback,errorCallback){
 	//***** Private Members ****************************************************
 	var 	scripts,
