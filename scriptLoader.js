@@ -29,6 +29,7 @@ function ScriptLoader(config,callback){//doneCallback,errorCallback){
 				if(isArray(config.scripts)){
 					scripts = config.scripts;
 				} else {
+					callback(new Error("Invalid config value 'scripts'. 'scripts' must be an array of strings (urls)."),"error" );
 					//need to throw Error here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				}
 				
@@ -51,9 +52,8 @@ function ScriptLoader(config,callback){//doneCallback,errorCallback){
 						parent = document.getElementsByTagName('script')[0].parentNode;	
 						break;
 					default:
-					//invalid value, use default, attatch to parent of first script
-					//probalby should throw error here instead!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-						parent = document.getElementsByTagName('script')[0].parentNode;	
+					//invalid value, throw error
+					callback(new Error("invalid config value 'appendTo'. 'appendTo' must be a string that matches one of the following values: 'head','body','default'."),"error");	
 				}
 			} else {
 				//use default,attatch to parent of first script
@@ -61,11 +61,12 @@ function ScriptLoader(config,callback){//doneCallback,errorCallback){
 			}
 			if(config.mode){
 				if(config.mode === "async" || config.mode === "sync" || config.mode === "fastSync"){
-					//valid mode, set memreq.addEventListener(")ber
+					//valid mode, set mode
 					mode = config.mode;
 				} else {
-					//invalid mode
-					//need to throw error here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+					//invalid mode, throw error
+					callback(new Error("Invalid config value 'mode'. 'mode' must be a string that matches one of the following values: 'async','fastSync','sync'."),"error");
+					
 				}				
 			} else {
 				//use default
